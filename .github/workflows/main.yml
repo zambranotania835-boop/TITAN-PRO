@@ -27,7 +27,7 @@ jobs:
 
       - name: Descomprimir proyecto Android
         run: |
-          unzip -q TITAN_PRO_Android_FINAL_FUENTE.zip -d android-src
+          unzip -q TITAN_PRO_Android_FUENTE_FINAL.zip -d android-src
 
       - name: Compilar APK
         run: gradle -p android-src assembleDebug
