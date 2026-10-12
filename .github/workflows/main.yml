@@ -1,0 +1,43 @@
+
+name: Compilar TITAN PRO APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Instalar Gradle
+        run: |
+          curl -L https://services.gradle.org/distributions/gradle-8.9-bin.zip -o /tmp/gradle.zip
+          sudo unzip -q /tmp/gradle.zip -d /opt
+          echo "/opt/gradle-8.9/bin" >> "$GITHUB_PATH"
+
+      - name: Descomprimir proyecto Android
+        run: |
+          unzip -q TITAN_PRO_Android_FUENTE_FINAL.zip -d android-src
+          test -f android-src/settings.gradle
+
+      - name: Compilar APK
+        run: gradle -p android-src assembleDebug
+
+      - name: Preparar descarga del APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: TITAN-PRO-APK
+          path: android-src/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
+          
